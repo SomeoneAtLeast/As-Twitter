@@ -6,7 +6,7 @@ import './post-list.css';
 import PostListItem from './../post-list-item';
 
 // posts - это деструктуризация объекта props
-const PostList = ({posts}) => {
+const PostList = ({posts, onDelete}) => {
 
     {/* Label - это props, то есть свойства объекта.
     Задаем индивидуальные свойства объектам и выводим их.
@@ -22,15 +22,19 @@ const PostList = ({posts}) => {
         // Но ничего страшного в передаче id не туда нет,
         // они просто не будут использоваться
         const {id, ...itemProps} = item;
-
         return (
             // а тут мы применяем Id (key).
             <li key = {id} className = "list-group-item">
+                
                 {/* <PostListItem
                  label={item.label}
                  important = {item.important}/> */}
                  {/* Выше старый синтаксис, а можно использовать спрэд */}
-                 <PostListItem {...itemProps}/>
+                 {/* В props можно передавать и функции */}
+                 <PostListItem 
+                    {...itemProps}
+                    // тут мы берем функцию OnDelete из props app.js и id берем тут же
+                    onDelete={() => onDelete(id)}/>
                  {/* Так мы развернем объект item, где лежит 1 пост
                  и из-за того, что у нас совпадают ключи со значениями
                  label={item.label}
