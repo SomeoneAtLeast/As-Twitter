@@ -38,7 +38,8 @@ export default class PostListItem extends Component {
     render () {
     // Вытаскиваем нужные переменные из this.props;
     // То есть из свойств каждого созданного объекта
-    const {label} = this.props;
+    // Мы вытащили Label и функцию OnDelete
+    const {label, onDelete} = this.props;
     // important берем из стейта
     // Like тоже из стейта
     const {important, like} = this.state;
@@ -71,7 +72,8 @@ export default class PostListItem extends Component {
                     </button>
                     <button 
                     className="btn-trash btm-sm"
-                    type="button">
+                    type="button"
+                    onClick={onDelete}>
                         <i className="fa fa-trash-o"></i> 
                     </button>
                     <i className="fa fa-heart"></i> 
