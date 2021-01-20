@@ -6,7 +6,7 @@ import './post-list.css';
 import PostListItem from './../post-list-item';
 
 // posts - это деструктуризация объекта props
-const PostList = ({posts, onDelete}) => {
+const PostList = ({posts, onDelete, onToggleImportant, onToggleLiked}) => {
 
     {/* Label - это props, то есть свойства объекта.
     Задаем индивидуальные свойства объектам и выводим их.
@@ -34,7 +34,10 @@ const PostList = ({posts, onDelete}) => {
                  <PostListItem 
                     {...itemProps}
                     // тут мы берем функцию OnDelete из props app.js и id берем тут же
-                    onDelete={() => onDelete(id)}/>
+                    onDelete={() => onDelete(id)}
+                    // Стрелочная функция запускает onToggleImportant c определенныйм Id
+                    onToggleImportant={() => onToggleImportant(id)}
+                   onToggleLiked={() =>onToggleLiked(id)}/>
                  {/* Так мы развернем объект item, где лежит 1 пост
                  и из-за того, что у нас совпадают ключи со значениями
                  label={item.label}

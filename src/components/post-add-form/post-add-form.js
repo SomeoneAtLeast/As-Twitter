@@ -1,25 +1,51 @@
-import React from "react";
+import React, {Component} from "react";
 
 import './post-add-form.css';
 
 //onAdd - деструкт из пропсов
 
-const PostAddForm = ({onAdd}) => {
-    return (
-        <div className="bottom-panel d-flex">
-            <input
-                type="text"
-                placeholder="О чем вы думаете сейчас?"
-                className='from-control new-post-label'
-            />
-            <button
-                type="submit"
-                className="btn btn-outline-secondary"
-                onClick={() => onAdd('Hello')}>
-                Добавить
-            </button>
-        </div>
-    )
-}
+export default class PostAddForm extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            text: ''
+        }
 
-export default PostAddForm;
+        this.onValueChange = this.onValueChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+    // e требуется для доступа к событию на конкретном элементе
+    // функцию сюда не передаем, так как следующее значение value не зависит от предыдущего
+    onValueChange(e) {
+        this.setState ({
+            text: e.target.value
+        })
+    }
+    // для отмены перезагрузки страницы по умолчанию
+    // передаем e и делаем preventdefault
+    onSubmit(e) {
+        e.preventDefault();
+        // это функция из app
+        this.props.OnAdd(this.state.text);
+    }
+
+    render() {
+        return (
+            <form
+                className="bottom-panel d-flex"
+                onSubmit = {this.onSubmit}>
+                <input
+                    type="text"
+                    placeholder="О чем вы думаете сейчас?"
+                    className="from-control new-post-label"
+                    onChange={this.onValueChange}
+                />
+                <button
+                    type="submit"
+                    className="btn btn-outline-secondary">
+                    Добавить
+                </button>
+            </form>
+        )
+    }
+}
