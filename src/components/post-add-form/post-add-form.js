@@ -6,9 +6,9 @@ import './post-add-form.css';
 
 export default class PostAddForm extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
-            text: ''
+            text: ""
         }
 
         this.onValueChange = this.onValueChange.bind(this);
@@ -26,7 +26,12 @@ export default class PostAddForm extends Component {
     onSubmit(e) {
         e.preventDefault();
         // это функция из app
-        this.props.OnAdd(this.state.text);
+        this.props.addItem(this.state.text);
+        // Менять стейт напрямую через сетстейт можно, если нам не требуется предыдущее состояние.
+        this.setState({
+            text: ""
+        });
+
     }
 
     render() {
@@ -39,6 +44,9 @@ export default class PostAddForm extends Component {
                     placeholder="О чем вы думаете сейчас?"
                     className="from-control new-post-label"
                     onChange={this.onValueChange}
+                    // сделали элемент контралируемым.
+                    // то есть можем им управлять.
+                    value={this.state.text}
                 />
                 <button
                     type="submit"

@@ -27,13 +27,16 @@ export default class App extends Component {
                 {label: "Going to learn React", important: true, like: false, id: "1"},
                 {label: "That is so good", important: false, like: false, id: "2"},
                 {label: "I need a break..", important: false, like: false, id: "3"},
-            ]
+            ],
+            // Для поиска
+            term: ""
         };
 
         this.deleteItem = this.deleteItem.bind(this);
-        this.addItem = this.addItem.bind(this);
         this.onToggleImportant = this.onToggleImportant.bind(this);
         this.onToggleLiked = this.onToggleLiked.bind(this);
+        this.addItem = this.addItem.bind(this);
+        this.onUpdateSherch = this.onUpdateSherch.bind(this);
 
         // Новые id будут генерироватся от 4
         this.maxId = 4;
@@ -115,12 +118,30 @@ export default class App extends Component {
              }
         })
     }
+    // прогоняем данные и сверем с term (это то, что ввел пользователь)
+    searchPost(items, term) {
+        // если пусто или стер, то верни все items
+        if(term.length === 0) {
+            return items
+        }
+        // ищем посты, где label совпадает с тем, что ввел пользователь
+        //Если ничего не найдем, то получим -1, а это нас не интересует
+        return items.filter((item) => {
+            return item.label.indexOf(term) > -1
+        })
+    }
+
+    onUpdateSherch (term) {
+        this.setState({term})
+    }
 
     render() {
-        const {data} = this.state;
+        const {data, term} = this.state;
         // Вытаскиваем лайкнутые, length вытаскивает длину массива, то естль кол-во лайкнутых постов
         const liked = data.filter(item => item.like).length;
         const allPosts = data.length;
+        //привзка не нужна, так как это просто метод класса
+        const visiblePost = this.searchPost(data, term);
 
         return (
             <div className="app">
@@ -128,19 +149,20 @@ export default class App extends Component {
                 liked={liked}
                 allPosts={allPosts}/>
                 <div className="searh-panel d-flex">
-                    <SearchPanel/>
+                    <SearchPanel
+                    onUpdateSherch={this.onUpdateSherch}/>
                     <PostStatusFilter/>
                 </div>
                 {/* А здесь мы передаем посты в props */}
                 <PostList
-                posts={this.state.data}
+                posts={visiblePost}
                 //Передаю стрелочную функцию
                 onDelete={this.deleteItem}
                 // Будут переключать стейты лайков и импортант
                 onToggleImportant={this.onToggleImportant}
                 onToggleLiked={this.onToggleLiked}/>
                 <PostAddForm
-                onAdd={this.addItem}/>
+                addItem={this.addItem}/>
             </div>
     
         )
