@@ -29,7 +29,10 @@ export default class App extends Component {
                 {label: "I need a break..", important: false, like: false, id: "3"},
             ],
             // Для поиска
-            term: ""
+            term: "",
+            // это состояние будет показывать как фильтровать посты.
+            // all - так мы задали фильтр по умолчанию
+            filter: "all"
         };
 
         this.deleteItem = this.deleteItem.bind(this);
@@ -37,6 +40,7 @@ export default class App extends Component {
         this.onToggleLiked = this.onToggleLiked.bind(this);
         this.addItem = this.addItem.bind(this);
         this.onUpdateSherch = this.onUpdateSherch.bind(this);
+        this.onFilterSelect = this.onFilterSelect.bind(this);
 
         // Новые id будут генерироватся от 4
         this.maxId = 4;
@@ -131,19 +135,35 @@ export default class App extends Component {
         })
     }
 
+    filterPost(items, filter) {
+        if (filter === "like") {
+            return items.filter(item => item.like)
+        } else {
+            return items
+        }
+    }
+
     onUpdateSherch (term) {
         this.setState({term})
     }
 
+    // меняет фильтр в стейте на ток, который поступит от кнопки.
+    onFilterSelect(filter) {
+        this.setState({filter})
+    }
+
     render() {
-        const {data, term} = this.state;
+        const {data, term, filter} = this.state;
         // Вытаскиваем лайкнутые, length вытаскивает длину массива, то естль кол-во лайкнутых постов
         const liked = data.filter(item => item.like).length;
         const allPosts = data.length;
         //привзка не нужна, так как это просто метод класса
-        const visiblePost = this.searchPost(data, term);
+        // Для фильтрации передаем массив, который сформирован searchPost и фильтр.
+        // Отображаемы посты проходят сперва фильтрацию по тому, что пользователь ввел, а потом по тому, какой стоит фильтр.
+        const visiblePost = this.filterPost(this.searchPost(data, term), filter);
 
         return (
+            // все, что мы тут передаем компонентам - мы передаем в props, из которого можно вытаскивать в других компонентах.
             <div className="app">
                 <AppHeader
                 liked={liked}
@@ -151,7 +171,10 @@ export default class App extends Component {
                 <div className="searh-panel d-flex">
                     <SearchPanel
                     onUpdateSherch={this.onUpdateSherch}/>
-                    <PostStatusFilter/>
+                    <PostStatusFilter
+                    filter={filter}
+                    // А тут обработчик для переключения фильтра
+                    onFilterSelect={this.onFilterSelect}/>
                 </div>
                 {/* А здесь мы передаем посты в props */}
                 <PostList
